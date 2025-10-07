@@ -22,7 +22,7 @@ switch (Platform.OS) {
     default:
         break;
 }
-const database = new Databases(client);
+const databases = new Databases(client);
 const account = new Account(client);
-export { account, client, config, database };
+export { account, client, config, databases };
 

@@ -31,7 +31,7 @@ const NotesScreen = () => {
 
   const fetchNotes = async () => {
     setLoading(true);
-    const response = await notesService.getNotes();
+    const response = await notesService.getNotes(user.response.$id);
 
     if (response.error) {
       setError("Failed to load notes");
@@ -46,11 +46,15 @@ const NotesScreen = () => {
   const addNote = async () => {
     if (newNote.trim() === "") return;
 
-    const response = await notesService.addNote(newNote);
+    const response = await notesService.addNote(newNote,user.response.$id);
     if (response.error) {
-      Alert.alert("Error", response.error);
+        console.log(user.$id);
+      Alert.alert("Error", response.error+user.$id);
     } else {
-      setNotes([response.data, ...notes]);
+        const newNoteData = response.data ||response;
+        console.log(newNoteData);
+    setNotes((prevNotes) => [newNoteData, ...prevNotes]);
+  
     }
 
     setNewNote("");
@@ -100,7 +104,12 @@ const NotesScreen = () => {
       ) : (
         <>
           {error && <Text style={styles.errorText}>{error}</Text>}
-          <NoteList notes={notes} onDelete={deleteNote} onUpdate={updateNote} />
+          {notes.length === 0 && !error ? (
+            <Text style={styles.noNotesText}>No notes available. Add a new note!</Text>
+          ):(
+             <NoteList notes={notes} onDelete={deleteNote} onUpdate={updateNote} />
+          )}
+         
         </>
       )}
 
@@ -148,6 +157,12 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     textAlign: "center",
   },
+    noNotesText: {
+        textAlign: "center",
+        color: "orange",
+        marginTop: 20,
+        fontSize: 16,
+    },
 });
 
 export default NotesScreen;

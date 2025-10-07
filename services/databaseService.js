@@ -1,12 +1,12 @@
-import { database } from './appwrite';
+import { databases } from './appwrite';
 
 const databaseService = {
-    async listDocuments(dbId,colId){
+    async listDocuments(dbId,colId,query=[]){
 
         try {
 
-            const response = await database.listDocuments(dbId,colId);
-            return response.documents || [];
+            const response = await databases.listDocuments(dbId,colId,query);
+            return response || [];
         }catch(error){
         console.log('Error fetching documents:', error.message);
         return {error: error.message};
@@ -16,8 +16,8 @@ const databaseService = {
     async createDocument(dbId,colId,data,id=null){
         try {
 
-            const response = await database.createDocument(dbId,colId,id || undefined,data);
-            return response.documents || [];
+            const response = await databases.createDocument(dbId,colId,id || undefined,data);
+            return response || [];
         }catch(error){
             console.log('Error creating document:', error.message);
             return {error: error.message};
@@ -27,7 +27,7 @@ const databaseService = {
     async deleteDocument(dbId,colId,docId){
         try {
 
-            await database.deleteDocument(dbId,colId,docId);
+            await databases.deleteDocument(dbId,colId,docId);
             return {success: true};
         }catch(error){
             return {error: error.message};
@@ -35,7 +35,7 @@ const databaseService = {
     },
     async updateNote(dbId,colId,docId,data){
         try {
-            const response = await database.updateDocument(dbId,colId,docId,data);
+            const response = await databases.updateDocument(dbId,colId,docId,data);
             if (response){
                 return {data: response};
             }else {
